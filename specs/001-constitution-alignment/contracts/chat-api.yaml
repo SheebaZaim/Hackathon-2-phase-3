@@ -1,0 +1,225 @@
+openapi: 3.0.3
+info:
+  title: Phase III Chat API
+  description: Stateless chat endpoint for AI-powered todo management
+  version: 3.0.0
+  contact:
+    name: Phase III Todo AI Chatbot
+
+servers:
+  - url: http://localhost:8000
+    description: Local development
+  - url: https://api.production.com
+    description: Production
+
+paths:
+  /api/{user_id}/chat:
+    post:
+      summary: Process chat message
+      description: |
+        Stateless chat endpoint implementing the 8-step execution cycle per constitution.
+        Each request is independent and reproducible.
+      operationId: chat
+      tags:
+        - Chat
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+          description: Authenticated user ID (string type per constitution)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              newConversation:
+                summary: Start new conversation
+                value:
+                  conversation_id: null
+                  message: "remind me to buy groceries tomorrow"
+              continueConversation:
+                summary: Continue existing conversation
+                value:
+                  conversation_id: 42
+                  message: "show me all my pending tasks"
+      responses:
+        '200':
+          description: Successful chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+              examples:
+                taskCreated:
+                  summary: Task creation response
+                  value:
+                    conversation_id: 42
+                    response: "I've created a new task 'buy groceries' for you. Would you like me to add any details?"
+                    tool_calls:
+                      - tool: "add_task"
+                        arguments:
+                          user_id: "user123"
+                          title: "buy groceries"
+                          description: null
+                        result:
+                          task_id: 15
+                          status: "created"
+                          title: "buy groceries"
+                tasksList:
+                  summary: Task list response
+                  value:
+                    conversation_id: 42
+                    response: "Here are your pending tasks:\n1. Buy groceries\n2. Call dentist\n3. Finish report"
+                    tool_calls:
+                      - tool: "list_tasks"
+                        arguments:
+                          user_id: "user123"
+                          status: "pending"
+                        result:
+                          - task_id: 15
+                            title: "Buy groceries"
+                            completed: false
+                          - task_id: 16
+                            title: "Call dentist"
+                            completed: false
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidMessage:
+                  value:
+                    error: "Bad Request"
+                    detail: "message field is required"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                unauthorized:
+                  value:
+                    error: "Unauthorized"
+                    detail: "Invalid or missing authentication token"
+        '404':
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                conversationNotFound:
+                  value:
+                    error: "Not Found"
+                    detail: "Conversation 999 not found or does not belong to user"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                serverError:
+                  value:
+                    error: "Internal Server Error"
+                    detail: "AI service unavailable"
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        conversation_id:
+          type: integer
+          nullable: true
+          description: |
+            ID of existing conversation to continue, or null to start new conversation.
+            System creates new conversation if null.
+          example: 42
+        message:
+          type: string
+          minLength: 1
+          maxLength: 10000
+          description: User's message in natural language
+          example: "remind me to buy groceries tomorrow"
+
+    ChatResponse:
+      type: object
+      required:
+        - conversation_id
+        - response
+        - tool_calls
+      properties:
+        conversation_id:
+          type: integer
+          description: ID of conversation (created or existing)
+          example: 42
+        response:
+          type: string
+          description: AI assistant's response message
+          example: "I've created a new task 'buy groceries' for you."
+        tool_calls:
+          type: array
+          description: MCP tools executed during request processing
+          items:
+            $ref: '#/components/schemas/ToolCall'
+
+    ToolCall:
+      type: object
+      required:
+        - tool
+        - arguments
+        - result
+      properties:
+        tool:
+          type: string
+          enum: [add_task, list_tasks, complete_task, delete_task, update_task]
+          description: Name of MCP tool executed
+          example: "add_task"
+        arguments:
+          type: object
+          description: Arguments passed to tool
+          example:
+            user_id: "user123"
+            title: "buy groceries"
+        result:
+          type: object
+          description: Tool execution result
+          example:
+            task_id: 15
+            status: "created"
+            title: "buy groceries"
+
+    Error:
+      type: object
+      required:
+        - error
+        - detail
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "Bad Request"
+        detail:
+          type: string
+          description: Detailed error message
+          example: "message field is required"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /api/auth/login endpoint

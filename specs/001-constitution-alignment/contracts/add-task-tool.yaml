@@ -1,0 +1,87 @@
+tool:
+  name: add_task
+  description: Create a new task for the user
+  version: 1.0.0
+
+  parameters:
+    type: object
+    required:
+      - user_id
+      - title
+    properties:
+      user_id:
+        type: string
+        maxLength: 255
+        description: ID of the user creating the task (must match authenticated user)
+        example: "user123"
+
+      title:
+        type: string
+        minLength: 1
+        maxLength: 255
+        description: Title/name of the task
+        example: "Buy groceries"
+
+      description:
+        type: string
+        nullable: true
+        description: Optional detailed description of the task
+        example: "Get milk, eggs, bread from Whole Foods"
+
+  returns:
+    type: object
+    required:
+      - task_id
+      - status
+      - title
+    properties:
+      task_id:
+        type: integer
+        description: Unique ID of the created task
+        example: 15
+
+      status:
+        type: string
+        enum: [created]
+        description: Status of the operation
+        example: "created"
+
+      title:
+        type: string
+        description: Title of the created task (confirmation)
+        example: "Buy groceries"
+
+  errors:
+    - code: INVALID_USER
+      description: user_id does not match authenticated user
+    - code: INVALID_TITLE
+      description: Title is empty or exceeds max length
+    - code: DATABASE_ERROR
+      description: Failed to create task in database
+
+  examples:
+    - name: Simple task
+      input:
+        user_id: "user123"
+        title: "Call dentist"
+      output:
+        task_id: 20
+        status: "created"
+        title: "Call dentist"
+
+    - name: Task with description
+      input:
+        user_id: "user123"
+        title: "Finish project report"
+        description: "Complete sections 3-5 and add charts"
+      output:
+        task_id: 21
+        status: "created"
+        title: "Finish project report"
+
+  implementation_notes:
+    - Tool is stateless - no session state maintained
+    - user_id must be validated against authenticated user before execution
+    - Task is created with completed=false by default
+    - Timestamps (created_at, updated_at) are auto-generated
+    - Tool must NOT access database directly - uses service layer

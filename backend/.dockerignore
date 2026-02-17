@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+# .env - Commented out to allow Docker to copy for HF Spaces deployment
+.venv
+env/
+venv/
+*.log
+.git/
+.gitignore
+migrations/
+show_database.py

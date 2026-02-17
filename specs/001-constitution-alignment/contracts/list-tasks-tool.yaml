@@ -1,0 +1,114 @@
+tool:
+  name: list_tasks
+  description: Retrieve tasks for the user filtered by completion status
+  version: 1.0.0
+
+  parameters:
+    type: object
+    required:
+      - user_id
+      - status
+    properties:
+      user_id:
+        type: string
+        maxLength: 255
+        description: ID of the user (must match authenticated user)
+        example: "user123"
+
+      status:
+        type: string
+        enum: [all, pending, completed]
+        description: Filter tasks by completion status
+        example: "pending"
+
+  returns:
+    type: array
+    description: Array of tasks matching the filter
+    items:
+      type: object
+      required:
+        - task_id
+        - title
+        - description
+        - completed
+        - created_at
+        - updated_at
+      properties:
+        task_id:
+          type: integer
+          description: Unique task ID
+          example: 15
+
+        title:
+          type: string
+          description: Task title
+          example: "Buy groceries"
+
+        description:
+          type: string
+          nullable: true
+          description: Task description (may be null)
+          example: "Get milk, eggs, bread"
+
+        completed:
+          type: boolean
+          description: Whether task is completed
+          example: false
+
+        created_at:
+          type: string
+          format: date-time
+          description: ISO8601 timestamp when task was created
+          example: "2026-02-15T10:30:00Z"
+
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO8601 timestamp when task was last updated
+          example: "2026-02-15T10:30:00Z"
+
+  errors:
+    - code: INVALID_USER
+      description: user_id does not match authenticated user
+    - code: INVALID_STATUS
+      description: status must be 'all', 'pending', or 'completed'
+    - code: DATABASE_ERROR
+      description: Failed to retrieve tasks from database
+
+  examples:
+    - name: List all tasks
+      input:
+        user_id: "user123"
+        status: "all"
+      output:
+        - task_id: 15
+          title: "Buy groceries"
+          description: "Get milk, eggs"
+          completed: false
+          created_at: "2026-02-15T10:00:00Z"
+          updated_at: "2026-02-15T10:00:00Z"
+        - task_id: 16
+          title: "Call dentist"
+          description: null
+          completed: true
+          created_at: "2026-02-14T09:00:00Z"
+          updated_at: "2026-02-15T11:00:00Z"
+
+    - name: List pending tasks only
+      input:
+        user_id: "user123"
+        status: "pending"
+      output:
+        - task_id: 15
+          title: "Buy groceries"
+          description: "Get milk, eggs"
+          completed: false
+          created_at: "2026-02-15T10:00:00Z"
+          updated_at: "2026-02-15T10:00:00Z"
+
+  implementation_notes:
+    - Tool is stateless - no session state maintained
+    - user_id must be validated against authenticated user
+    - Returns empty array if no tasks match filter
+    - Tasks ordered by created_at DESC (newest first)
+    - Tool must NOT access database directly - uses service layer

@@ -1,0 +1,78 @@
+tool:
+  name: delete_task
+  description: Permanently delete a task
+  version: 1.0.0
+
+  parameters:
+    type: object
+    required:
+      - user_id
+      - task_id
+    properties:
+      user_id:
+        type: string
+        maxLength: 255
+        description: ID of the user (must match authenticated user)
+        example: "user123"
+
+      task_id:
+        type: integer
+        description: ID of the task to delete
+        example: 15
+
+  returns:
+    type: object
+    required:
+      - task_id
+      - status
+      - title
+    properties:
+      task_id:
+        type: integer
+        description: ID of the deleted task
+        example: 15
+
+      status:
+        type: string
+        enum: [deleted]
+        description: Status of the operation
+        example: "deleted"
+
+      title:
+        type: string
+        description: Title of the deleted task (confirmation)
+        example: "Buy groceries"
+
+  errors:
+    - code: INVALID_USER
+      description: user_id does not match authenticated user
+    - code: TASK_NOT_FOUND
+      description: Task with given task_id not found or doesn't belong to user
+    - code: DATABASE_ERROR
+      description: Failed to delete task from database
+
+  examples:
+    - name: Delete a task
+      input:
+        user_id: "user123"
+        task_id: 15
+      output:
+        task_id: 15
+        status: "deleted"
+        title: "Buy groceries"
+
+    - name: Task not found
+      input:
+        user_id: "user123"
+        task_id: 999
+      error:
+        code: TASK_NOT_FOUND
+        message: "Task 999 not found or does not belong to user"
+
+  implementation_notes:
+    - Tool is stateless - no session state maintained
+    - user_id must be validated against authenticated user
+    - Task ownership verified before deletion (task.user_id == user_id)
+    - Permanently removes task from database (hard delete)
+    - Tool must NOT access database directly - uses service layer
+    - Non-idempotent - deleting already deleted task returns TASK_NOT_FOUND error

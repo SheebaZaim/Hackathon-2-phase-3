@@ -1,0 +1,53 @@
+═══════════════════════════════════════════════════════════════
+   🚀 TODO APP - READY TO DEPLOY IN 10 MINUTES
+═══════════════════════════════════════════════════════════════
+
+READ THIS FILE: DEPLOY_NOW.md for complete instructions
+
+QUICK SUMMARY:
+
+┌─────────────────────────────────────────────────────────────┐
+│ STEP 1: Fix Backend Database (5 min)                        │
+└─────────────────────────────────────────────────────────────┘
+
+Go to: https://huggingface.co/spaces/Sheeba0321/hackathon-2-phase-2/settings
+
+Delete and re-add DATABASE_URL secret:
+
+Value (copy this ENTIRE line as ONE block):
+postgresql://neondb_owner:npg_NfkYIG5hUuy9@ep-raspy-king-aen4resw-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require
+
+⚠️ CRITICAL: Make sure "neon.tech" has NO spaces!
+
+┌─────────────────────────────────────────────────────────────┐
+│ STEP 2: Deploy Frontend (3 min)                             │
+└─────────────────────────────────────────────────────────────┘
+
+Go to: https://vercel.com/new
+
+Import: SheebaZaim/Hackathon-2-phase-2
+
+Settings:
+- Root Directory: frontend  ← IMPORTANT!
+- Environment Variable:
+  NEXT_PUBLIC_BACKEND_URL=https://sheeba0321-hackathon-2-phase-2.hf.space
+
+Click Deploy!
+
+┌─────────────────────────────────────────────────────────────┐
+│ STEP 3: Test (2 min)                                        │
+└─────────────────────────────────────────────────────────────┘
+
+✅ Check backend: https://sheeba0321-hackathon-2-phase-2.hf.space/health
+   Should show: "database":"connected"
+
+✅ Open your Vercel URL
+✅ Register → Login → Create Task → ✨ Success!
+
+═══════════════════════════════════════════════════════════════
+
+Everything is ready! Just follow the 3 steps above.
+
+Full instructions in: DEPLOY_NOW.md
+
+🎯 Total time: ~10 minutes

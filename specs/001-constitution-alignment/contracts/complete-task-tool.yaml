@@ -1,0 +1,80 @@
+tool:
+  name: complete_task
+  description: Mark a task as completed
+  version: 1.0.0
+
+  parameters:
+    type: object
+    required:
+      - user_id
+      - task_id
+    properties:
+      user_id:
+        type: string
+        maxLength: 255
+        description: ID of the user (must match authenticated user)
+        example: "user123"
+
+      task_id:
+        type: integer
+        description: ID of the task to mark as completed
+        example: 15
+
+  returns:
+    type: object
+    required:
+      - task_id
+      - status
+      - title
+    properties:
+      task_id:
+        type: integer
+        description: ID of the completed task
+        example: 15
+
+      status:
+        type: string
+        enum: [completed]
+        description: Status of the operation
+        example: "completed"
+
+      title:
+        type: string
+        description: Title of the completed task (confirmation)
+        example: "Buy groceries"
+
+  errors:
+    - code: INVALID_USER
+      description: user_id does not match authenticated user
+    - code: TASK_NOT_FOUND
+      description: Task with given task_id not found or doesn't belong to user
+    - code: ALREADY_COMPLETED
+      description: Task is already marked as completed
+    - code: DATABASE_ERROR
+      description: Failed to update task in database
+
+  examples:
+    - name: Complete a task
+      input:
+        user_id: "user123"
+        task_id: 15
+      output:
+        task_id: 15
+        status: "completed"
+        title: "Buy groceries"
+
+    - name: Task not found
+      input:
+        user_id: "user123"
+        task_id: 999
+      error:
+        code: TASK_NOT_FOUND
+        message: "Task 999 not found or does not belong to user"
+
+  implementation_notes:
+    - Tool is stateless - no session state maintained
+    - user_id must be validated against authenticated user
+    - Task ownership verified before update (task.user_id == user_id)
+    - Sets completed=true and updates updated_at timestamp
+    - Tool must NOT access database directly - uses service layer
+    - Idempotent operation - completing already completed task returns success

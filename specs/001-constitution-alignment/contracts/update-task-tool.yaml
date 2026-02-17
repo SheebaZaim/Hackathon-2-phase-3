@@ -1,0 +1,121 @@
+tool:
+  name: update_task
+  description: Update task title and/or description
+  version: 1.0.0
+
+  parameters:
+    type: object
+    required:
+      - user_id
+      - task_id
+    properties:
+      user_id:
+        type: string
+        maxLength: 255
+        description: ID of the user (must match authenticated user)
+        example: "user123"
+
+      task_id:
+        type: integer
+        description: ID of the task to update
+        example: 15
+
+      title:
+        type: string
+        nullable: true
+        minLength: 1
+        maxLength: 255
+        description: New title for the task (optional)
+        example: "Buy organic groceries"
+
+      description:
+        type: string
+        nullable: true
+        description: New description for the task (optional, can be null to clear)
+        example: "Get milk, eggs, bread from Whole Foods"
+
+  returns:
+    type: object
+    required:
+      - task_id
+      - status
+      - title
+    properties:
+      task_id:
+        type: integer
+        description: ID of the updated task
+        example: 15
+
+      status:
+        type: string
+        enum: [updated]
+        description: Status of the operation
+        example: "updated"
+
+      title:
+        type: string
+        description: Current title of the task after update
+        example: "Buy organic groceries"
+
+  errors:
+    - code: INVALID_USER
+      description: user_id does not match authenticated user
+    - code: TASK_NOT_FOUND
+      description: Task with given task_id not found or doesn't belong to user
+    - code: INVALID_TITLE
+      description: Title is empty or exceeds max length
+    - code: NO_CHANGES
+      description: Neither title nor description provided for update
+    - code: DATABASE_ERROR
+      description: Failed to update task in database
+
+  examples:
+    - name: Update title only
+      input:
+        user_id: "user123"
+        task_id: 15
+        title: "Buy organic groceries"
+      output:
+        task_id: 15
+        status: "updated"
+        title: "Buy organic groceries"
+
+    - name: Update description only
+      input:
+        user_id: "user123"
+        task_id: 15
+        description: "Get from Whole Foods"
+      output:
+        task_id: 15
+        status: "updated"
+        title: "Buy groceries"
+
+    - name: Update both title and description
+      input:
+        user_id: "user123"
+        task_id: 15
+        title: "Buy organic groceries"
+        description: "Milk, eggs, bread from Whole Foods"
+      output:
+        task_id: 15
+        status: "updated"
+        title: "Buy organic groceries"
+
+    - name: Clear description
+      input:
+        user_id: "user123"
+        task_id: 15
+        description: null
+      output:
+        task_id: 15
+        status: "updated"
+        title: "Buy groceries"
+
+  implementation_notes:
+    - Tool is stateless - no session state maintained
+    - user_id must be validated against authenticated user
+    - Task ownership verified before update (task.user_id == user_id)
+    - At least one field (title or description) must be provided
+    - Updates updated_at timestamp automatically
+    - Tool must NOT access database directly - uses service layer
+    - Null description clears the field, omitted description leaves it unchanged

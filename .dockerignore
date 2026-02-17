@@ -1,0 +1,66 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.venv/
+venv/
+ENV/
+env/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env*.local
+*.env
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+.pytest_cache/
+
+# Documentation
+README.md
+*.md
+docs/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Deployment guides (not needed in container)
+DEPLOYMENT*.md
+DEPLOY*.md
+QUICK_START.txt
+STEP_BY_STEP_GUIDE.md
+VERCEL_DEPLOYMENT_GUIDE.md
