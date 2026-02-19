@@ -142,10 +142,6 @@ export default function DashboardPage() {
 
         {/* Sidebar — 280px, hidden on small/medium screens */}
         <aside className="hidden lg:flex w-[280px] bg-white border-r border-[#E5E7EB] flex-shrink-0 flex-col">
-          {/* Sidebar top accent */}
-          <div className="px-5 py-4 border-b border-[#E5E7EB]">
-            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Navigation</p>
-          </div>
           <nav className="p-3 flex flex-col gap-1 pt-4">
             {/* Tasks — active */}
             <Link
