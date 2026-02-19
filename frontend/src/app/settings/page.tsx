@@ -10,74 +10,89 @@ export default function SettingsPage() {
   const [autoArchive, setAutoArchive] = useState(true);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-600 to-blue-800 py-8 px-4">
-      {/* Navbar */}
-      <nav className="max-w-4xl mx-auto mb-8 flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl px-6 py-4">
-        <Link href="/dashboard" className="text-white hover:text-blue-200 transition-colors">
-          <span className="text-2xl">←</span>
-        </Link>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <div className="w-8"></div> {/* Spacer for centering */}
-      </nav>
+    <div className="min-h-screen bg-gray-50">
 
-      {/* Settings Container */}
-      <div className="max-w-4xl mx-auto space-y-6">
+      {/* ── Navbar ── */}
+      <header className="h-[64px] bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/dashboard"
+              className="h-9 w-9 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+            </Link>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center">
+                <span className="text-xs text-white font-bold">✓</span>
+              </div>
+              <span className="text-base font-bold text-purple-600 tracking-tight">DO IT</span>
+            </div>
+          </div>
+          <h1 className="text-base font-semibold text-gray-900">Settings</h1>
+          <div className="w-24" />
+        </div>
+      </header>
 
-        {/* Profile Section */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+      {/* Content */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 space-y-5">
+
+        {/* Profile */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div className="flex items-center gap-4 mb-5">
+            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-2xl font-bold">
               U
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">User Profile</h2>
-              <p className="text-gray-500">Manage your account settings</p>
+              <h2 className="text-base font-semibold text-gray-900">User Profile</h2>
+              <p className="text-sm text-gray-500">Manage your account settings</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Display Name
               </label>
               <input
                 type="text"
                 defaultValue="User"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all"
+                className="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                 placeholder="Enter your name"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Email Address
               </label>
               <input
                 type="email"
                 defaultValue="user@example.com"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all"
+                className="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                 placeholder="Enter your email"
               />
             </div>
 
-            <button className="w-full sm:w-auto px-6 py-3 bg-cyan-500 text-white rounded-xl font-semibold hover:bg-cyan-600 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+            <button className="h-10 px-6 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-full border border-purple-600 transition-colors shadow-sm">
               Save Profile
             </button>
           </div>
         </div>
 
-        {/* Notifications Section */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <span className="text-2xl">🔔</span>
-            Notifications
+        {/* Notifications */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <h2 className="text-base font-semibold text-gray-900 mb-5 flex items-center gap-2">
+            <span>🔔</span> Notifications
           </h2>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900">Email Notifications</p>
-                <p className="text-sm text-gray-500">Receive task reminders via email</p>
+                <p className="text-sm font-medium text-gray-900">Email Notifications</p>
+                <p className="text-xs text-gray-500 mt-0.5">Receive task reminders via email</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -86,14 +101,16 @@ export default function SettingsPage() {
                   onChange={(e) => setEmailNotifications(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-14 h-7 bg-gray-200 peer-focus:ring-4 peer-focus:ring-cyan-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-500"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
               </label>
             </div>
 
+            <div className="h-px bg-gray-100" />
+
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900">Push Notifications</p>
-                <p className="text-sm text-gray-500">Get instant notifications on your device</p>
+                <p className="text-sm font-medium text-gray-900">Push Notifications</p>
+                <p className="text-xs text-gray-500 mt-0.5">Get instant notifications on your device</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -102,24 +119,23 @@ export default function SettingsPage() {
                   onChange={(e) => setPushNotifications(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-14 h-7 bg-gray-200 peer-focus:ring-4 peer-focus:ring-cyan-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-500"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
               </label>
             </div>
           </div>
         </div>
 
-        {/* Preferences Section */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <span className="text-2xl">⚙️</span>
-            Preferences
+        {/* Preferences */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <h2 className="text-base font-semibold text-gray-900 mb-5 flex items-center gap-2">
+            <span>⚙️</span> Preferences
           </h2>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900">Dark Mode</p>
-                <p className="text-sm text-gray-500">Toggle dark theme (coming soon)</p>
+                <p className="text-sm font-medium text-gray-900">Dark Mode</p>
+                <p className="text-xs text-gray-500 mt-0.5">Toggle dark theme (coming soon)</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -128,14 +144,16 @@ export default function SettingsPage() {
                   onChange={(e) => setDarkMode(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-14 h-7 bg-gray-200 peer-focus:ring-4 peer-focus:ring-cyan-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-500"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
               </label>
             </div>
 
+            <div className="h-px bg-gray-100" />
+
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900">Auto-Archive Old Tasks</p>
-                <p className="text-sm text-gray-500">Archive completed tasks after 30 days</p>
+                <p className="text-sm font-medium text-gray-900">Auto-Archive Old Tasks</p>
+                <p className="text-xs text-gray-500 mt-0.5">Archive completed tasks after 30 days</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -144,41 +162,38 @@ export default function SettingsPage() {
                   onChange={(e) => setAutoArchive(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-14 h-7 bg-gray-200 peer-focus:ring-4 peer-focus:ring-cyan-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-500"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
               </label>
             </div>
           </div>
         </div>
 
-        {/* Account Actions Section */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <span className="text-2xl">🔐</span>
-            Account & Security
+        {/* Account & Security */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <h2 className="text-base font-semibold text-gray-900 mb-5 flex items-center gap-2">
+            <span>🔐</span> Account &amp; Security
           </h2>
 
-          <div className="space-y-3">
-            <button className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+          <div className="flex flex-wrap gap-3">
+            <button className="h-10 px-6 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-full border border-purple-600 transition-colors shadow-sm">
               Change Password
             </button>
-
-            <button className="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all ml-0 sm:ml-3 block sm:inline-block">
+            <button className="h-10 px-6 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-full border border-gray-300 transition-colors">
               Export Data
             </button>
+          </div>
 
-            <div className="pt-4 border-t border-gray-200 mt-6">
-              <button className="text-red-600 hover:text-red-700 font-semibold transition-colors">
-                Delete Account
-              </button>
-            </div>
+          <div className="pt-5 mt-5 border-t border-gray-100">
+            <button className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors">
+              Delete Account
+            </button>
           </div>
         </div>
 
-        {/* App Information */}
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 text-white text-center">
-          <p className="font-semibold mb-1">DO IT - Task Manager</p>
-          <p className="text-sm text-blue-100">Version 1.0.0</p>
-          <p className="text-xs text-blue-200 mt-2">© 2026 All rights reserved</p>
+        {/* App Info */}
+        <div className="text-center py-4">
+          <p className="text-sm font-medium text-gray-600">DO IT — Task Manager</p>
+          <p className="text-xs text-gray-400 mt-1">Version 1.0.0 · © 2026 All rights reserved</p>
         </div>
 
       </div>

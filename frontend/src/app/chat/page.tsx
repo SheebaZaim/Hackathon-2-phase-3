@@ -1,8 +1,3 @@
-/**
- * AI Chat Page
- * AI-powered todo management — sidebar conversations + chat panel
- */
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -37,47 +32,48 @@ export default function ChatPage() {
 
   if (!user) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-[#F9FAFB]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB]"></div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-      {/* Top Navbar — 72px with blue gradient */}
-      <header className="h-[72px] flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4F8CFF, #3A6EDC)' }}>
-        <div className="px-8 h-full flex items-center justify-between">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+
+      {/* ── Navbar ── */}
+      <header className="h-[64px] flex-shrink-0 bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="px-6 h-full flex items-center justify-between max-w-7xl mx-auto">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center border border-white/30">
+            <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center">
               <span className="text-sm text-white font-bold">✓</span>
             </div>
-            <span className="text-xl font-bold text-white">DO IT</span>
+            <span className="text-lg font-bold text-purple-600 tracking-tight">DO IT</span>
           </div>
 
           {/* Center nav */}
-          <nav className="hidden sm:flex items-center gap-2">
+          <nav className="hidden sm:flex items-center gap-1">
             <Link
               href="/dashboard"
-              className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/20 rounded-[10px] transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
             >
               Tasks
             </Link>
             <Link
               href="/chat"
-              className="px-4 py-2 text-sm font-semibold text-white bg-white/25 border border-white/30 rounded-[10px]"
+              className="px-4 py-2 text-sm font-semibold text-purple-600 bg-purple-50 rounded-full transition-colors"
             >
               AI Assistant
             </Link>
           </nav>
 
-          {/* Right side */}
+          {/* Right */}
           <div className="flex items-center gap-3">
-            <span className="text-sm text-white/80 hidden md:inline">{user.email}</span>
+            <span className="text-sm text-gray-500 hidden md:inline">{user.email}</span>
             <button
               onClick={handleLogout}
-              className="h-[40px] px-5 text-sm font-semibold text-white bg-white/20 border border-white/30 rounded-[12px] hover:bg-white/30 transition-colors"
+              className="h-9 px-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
             >
               Logout
             </button>
@@ -86,10 +82,10 @@ export default function ChatPage() {
       </header>
 
       {/* Content: Sidebar + Chat Panel */}
-      <div className="flex flex-1 overflow-hidden" style={{ minHeight: 'calc(100vh - 72px)' }}>
+      <div className="flex flex-1 overflow-hidden" style={{ minHeight: 'calc(100vh - 64px)' }}>
 
-        {/* Conversation Sidebar — 280px, hidden on small screens */}
-        <aside className="hidden md:flex w-[280px] bg-white border-r border-[#E5E7EB] flex-shrink-0 flex-col overflow-hidden">
+        {/* Conversation Sidebar */}
+        <aside className="hidden md:flex w-[260px] bg-white border-r border-gray-200 flex-shrink-0 flex-col overflow-hidden">
           <ConversationList
             userId={user.id}
             activeConversationId={activeConversationId}

@@ -1,8 +1,3 @@
-/**
- * Register Page
- * Create new user account with backend API
- */
-
 'use client';
 
 import { useState, FormEvent } from 'react';
@@ -24,7 +19,6 @@ export default function RegisterPage() {
     setLoading(true);
     setError('');
 
-    // Validation
     if (password.length < 8) {
       setError('Password must be at least 8 characters long');
       setLoading(false);
@@ -38,17 +32,11 @@ export default function RegisterPage() {
     }
 
     try {
-      // Register with backend (token is automatically stored)
       await register(email, password);
-
-      // Small delay to ensure token is stored before redirect
       await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Redirect to dashboard
       router.push('/dashboard');
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || err.message || 'Registration failed';
-      setError(errorMessage);
+      setError(err.response?.data?.detail || err.message || 'Registration failed');
       console.error('Registration error:', err);
     } finally {
       setLoading(false);
@@ -56,47 +44,49 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+
+        {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[#4F8CFF] to-[#3A6EDC] rounded-full mb-4">
-            <span className="text-xl text-white font-bold">✓</span>
-          </div>
-          <h2 className="text-2xl font-semibold text-[#111827]">
-            Join DO IT
-          </h2>
-          <p className="mt-2 text-sm text-[#6B7280]">
-            Create your account to get started
-          </p>
+          <Link href="/" className="inline-flex items-center gap-2.5 mb-5">
+            <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center shadow-sm">
+              <span className="text-white text-lg font-bold">✓</span>
+            </div>
+            <span className="text-2xl font-bold text-purple-600 tracking-tight">DO IT</span>
+          </Link>
+          <h2 className="text-xl font-bold text-gray-900">Create your account</h2>
+          <p className="mt-1 text-sm text-gray-600">Start managing tasks with AI assistance</p>
         </div>
 
-        <div className="bg-white rounded-[24px] shadow-md border border-[#E5E7EB] p-10">
-          <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {error && (
-              <div className="rounded-[14px] bg-red-50 p-4 border border-red-200">
-                <div className="text-sm text-red-700">{error}</div>
+              <div className="rounded-lg bg-red-50 border border-red-200 p-3">
+                <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
 
             <div>
-              <label htmlFor="email-address" className="block text-[13px] font-medium text-[#374151] mb-1.5">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
                 Email address
               </label>
               <input
-                id="email-address"
+                id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-[50px] px-4 border border-[#E5E7EB] placeholder-gray-400 text-[#111827] rounded-[14px] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#2563EB] transition-all"
+                className="w-full h-11 px-4 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-[13px] font-medium text-[#374151] mb-1.5">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
                 Password
               </label>
               <input
@@ -107,13 +97,13 @@ export default function RegisterPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-[50px] px-4 border border-[#E5E7EB] placeholder-gray-400 text-[#111827] rounded-[14px] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#2563EB] transition-all"
-                placeholder="Create a password (min 8 characters)"
+                className="w-full h-11 px-4 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                placeholder="Min. 8 characters"
               />
             </div>
 
             <div>
-              <label htmlFor="confirm-password" className="block text-[13px] font-medium text-[#374151] mb-1.5">
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1.5">
                 Confirm Password
               </label>
               <input
@@ -124,32 +114,30 @@ export default function RegisterPage() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full h-[50px] px-4 border border-[#E5E7EB] placeholder-gray-400 text-[#111827] rounded-[14px] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#2563EB] transition-all"
+                className="w-full h-11 px-4 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                 placeholder="Confirm your password"
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <Link href="/login" className="font-medium text-[#2563EB] hover:text-blue-700 hover:underline transition-colors">
-                  Already have an account? Sign in
-                </Link>
-              </div>
-            </div>
-
-            <div>
+            <div className="pt-1">
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full h-[48px] bg-[#2563EB] hover:bg-blue-700 text-white font-semibold rounded-[14px] text-sm transition-all duration-200 ${
-                  loading ? 'opacity-75 cursor-not-allowed' : ''
-                }`}
+                className={`w-full h-11 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-full text-sm transition-all shadow-sm border border-purple-600 ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
               >
-                {loading ? 'Creating account...' : 'SIGN UP'}
+                {loading ? 'Creating account...' : 'Create Account'}
               </button>
             </div>
           </form>
+
+          <p className="mt-5 text-center text-sm text-gray-600">
+            Already have an account?{' '}
+            <Link href="/login" className="font-semibold text-purple-600 hover:text-purple-700 transition-colors">
+              Sign in
+            </Link>
+          </p>
         </div>
+
       </div>
     </div>
   );
