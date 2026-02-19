@@ -27,7 +27,7 @@ export default function TaskListComponent({
 }: TaskListProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState('');
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
 
   // Track screen width in JS — avoids Tailwind responsive class conflicts
@@ -62,7 +62,7 @@ export default function TaskListComponent({
     );
   };
 
-  const handleToggle = async (id: string) => {
+  const handleToggle = async (id: number) => {
     setActionLoading(id);
     try {
       await onToggle(id);
@@ -71,7 +71,7 @@ export default function TaskListComponent({
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this task?')) {
       setActionLoading(id);
       try {
@@ -87,7 +87,7 @@ export default function TaskListComponent({
     setEditTitle(task.title);
   };
 
-  const handleEditSave = async (id: string) => {
+  const handleEditSave = async (id: number) => {
     const trimmedTitle = editTitle.trim();
     if (!trimmedTitle) {
       alert('Task title cannot be empty');
