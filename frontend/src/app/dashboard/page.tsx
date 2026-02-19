@@ -154,9 +154,6 @@ export default function DashboardPage() {
 
         {/* Sidebar */}
         <aside className="hidden lg:flex w-[260px] bg-white border-r border-gray-200 flex-shrink-0 flex-col">
-          <div className="px-4 py-4 border-b border-gray-200">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Navigation</p>
-          </div>
           <nav className="p-3 flex flex-col gap-1 pt-3">
             <Link
               href="/dashboard"
