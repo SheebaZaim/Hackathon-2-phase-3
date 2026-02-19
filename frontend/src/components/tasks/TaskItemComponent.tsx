@@ -9,9 +9,9 @@ import type { Task } from '@/lib/types';
 
 interface TaskItemProps {
   task: Task;
-  onToggle: (id: string) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
-  onEdit: (id: string, title: string) => Promise<void>;
+  onToggle: (id: number) => Promise<void>;
+  onDelete: (id: number) => Promise<void>;
+  onEdit: (id: number, title: string) => Promise<void>;
 }
 
 export default function TaskItemComponent({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
