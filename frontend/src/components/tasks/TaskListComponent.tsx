@@ -5,7 +5,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Task } from '@/lib/types';
 
 interface TaskListProps {
@@ -28,6 +28,15 @@ export default function TaskListComponent({
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  // Track screen width in JS — avoids Tailwind responsive class conflicts
+  useEffect(() => {
+    const check = () => setIsLargeScreen(window.innerWidth >= 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return '-';
@@ -131,8 +140,8 @@ export default function TaskListComponent({
 
   return (
     <>
-      {/* Desktop Table (md and above) */}
-      <div className="hidden md:block overflow-x-auto">
+      {/* Desktop Table — only renders when screen ≥ 1024px */}
+      {isLargeScreen && <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB]">
@@ -182,11 +191,11 @@ export default function TaskListComponent({
                         className="h-8 px-3 text-xs bg-white border border-[#E5E7EB] text-[#111827] rounded-[8px] hover:bg-gray-50 transition-colors">Cancel</button>
                     </div>
                   ) : (
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex gap-3 justify-center">
                       <button onClick={() => handleEditStart(task)} disabled={actionLoading === task.id}
-                        className="h-8 px-3 text-xs bg-blue-50 text-[#2563EB] rounded-[8px] hover:bg-blue-100 disabled:bg-gray-100 disabled:text-gray-400 transition-colors">Edit</button>
+                        className="h-8 px-4 text-xs font-semibold bg-blue-50 text-[#2563EB] rounded-[8px] border border-blue-200 hover:bg-blue-100 disabled:opacity-50 transition-colors">Edit</button>
                       <button onClick={() => handleDelete(task.id)} disabled={actionLoading === task.id}
-                        className="h-8 px-3 text-xs bg-red-50 text-red-700 rounded-[8px] hover:bg-red-100 disabled:bg-gray-100 disabled:text-gray-400 transition-colors">Delete</button>
+                        className="h-8 px-4 text-xs font-semibold bg-red-50 text-red-700 rounded-[8px] border border-red-200 hover:bg-red-100 disabled:opacity-50 transition-colors">Delete</button>
                     </div>
                   )}
                 </td>
@@ -194,12 +203,12 @@ export default function TaskListComponent({
             ))}
           </tbody>
         </table>
-      </div>
+      </div>}
 
-      {/* Mobile Cards (below md) */}
-      <div className="md:hidden divide-y divide-[#E5E7EB]">
+      {/* Card view — only renders when screen < 1024px, vertical stack only */}
+      {!isLargeScreen && <div className="p-4 flex flex-col gap-4">
         {tasks.map((task) => (
-          <div key={task.id} className="rounded-[16px] border border-[#E5E7EB] p-4 m-3 shadow-sm bg-white">
+          <div key={task.id} className="rounded-[20px] border border-[#E5E7EB] p-5 shadow-sm bg-white">
             {/* Top row: checkbox + title */}
             <div className="flex items-start gap-3">
               <input type="checkbox" checked={task.completed} onChange={() => handleToggle(task.id)}
@@ -231,26 +240,26 @@ export default function TaskListComponent({
             </div>
 
             {/* Action row */}
-            <div className="flex gap-2 mt-3 ml-8">
+            <div className="flex gap-3 mt-4">
               {editingId === task.id ? (
                 <>
                   <button onClick={() => handleEditSave(task.id)} disabled={actionLoading === task.id}
-                    className="h-8 px-3 text-xs bg-[#2563EB] text-white rounded-[8px] hover:bg-blue-700 disabled:bg-gray-300 transition-colors">Save</button>
+                    className="h-[40px] px-5 text-xs font-semibold bg-[#2563EB] text-white rounded-[10px] border border-[#2563EB] hover:bg-blue-700 disabled:opacity-50 transition-colors">Save</button>
                   <button onClick={handleEditCancel}
-                    className="h-8 px-3 text-xs bg-white border border-[#E5E7EB] text-[#111827] rounded-[8px] hover:bg-gray-50 transition-colors">Cancel</button>
+                    className="h-[40px] px-5 text-xs font-semibold bg-white text-[#111827] rounded-[10px] border border-[#E5E7EB] hover:bg-[#F3F4F6] transition-colors">Cancel</button>
                 </>
               ) : (
                 <>
                   <button onClick={() => handleEditStart(task)} disabled={actionLoading === task.id}
-                    className="h-8 px-3 text-xs bg-blue-50 text-[#2563EB] rounded-[8px] hover:bg-blue-100 transition-colors">Edit</button>
+                    className="h-[40px] px-5 text-xs font-semibold bg-blue-50 text-[#2563EB] rounded-[10px] border border-blue-200 hover:bg-blue-100 disabled:opacity-50 transition-colors">Edit</button>
                   <button onClick={() => handleDelete(task.id)} disabled={actionLoading === task.id}
-                    className="h-8 px-3 text-xs bg-red-50 text-red-700 rounded-[8px] hover:bg-red-100 transition-colors">Delete</button>
+                    className="h-[40px] px-5 text-xs font-semibold bg-red-50 text-red-700 rounded-[10px] border border-red-200 hover:bg-red-100 disabled:opacity-50 transition-colors">Delete</button>
                 </>
               )}
             </div>
           </div>
         ))}
-      </div>
+      </div>}
     </>
   );
 }

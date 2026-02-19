@@ -1,6 +1,6 @@
 /**
- * Phase III: AI Chat Page
- * AI-powered todo management through natural language conversation
+ * AI Chat Page
+ * AI-powered todo management — sidebar conversations + chat panel
  */
 
 'use client';
@@ -16,24 +16,17 @@ export default function ChatPage() {
   const router = useRouter();
   const [user, setUser] = useState<{ id: string; email: string } | null>(null);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
-  const [showSidebar, setShowSidebar] = useState(false);
 
   useEffect(() => {
-    // Check authentication
     const checkAuth = async () => {
       await new Promise(resolve => setTimeout(resolve, 50));
-
       if (!isAuthenticated()) {
         router.push('/login');
         return;
       }
-
       const currentUser = getCurrentUser();
-      if (currentUser) {
-        setUser(currentUser);
-      }
+      if (currentUser) setUser(currentUser);
     };
-
     checkAuth();
   }, [router]);
 
@@ -52,89 +45,71 @@ export default function ChatPage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-      {/* Header */}
-      <header className="bg-white h-[72px] border-b border-[#E5E7EB] shadow-sm flex-shrink-0">
-        <div className="max-w-[1200px] mx-auto px-8 h-full">
-          <div className="flex items-center justify-between h-full">
-            <div className="flex items-center gap-6">
-              <h1 className="text-xl font-bold text-[#111827]">AI Todo Assistant</h1>
-              <nav className="flex items-center gap-1">
-                <Link
-                  href="/chat"
-                  className="px-4 py-2 text-sm font-medium text-[#2563EB] bg-blue-50 rounded-[10px]"
-                >
-                  AI Chat
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className="px-4 py-2 text-sm font-medium text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] rounded-[10px] transition-colors"
-                >
-                  Task List
-                </Link>
-              </nav>
+      {/* Top Navbar — 72px with blue gradient */}
+      <header className="h-[72px] flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4F8CFF, #3A6EDC)' }}>
+        <div className="px-8 h-full flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center border border-white/30">
+              <span className="text-sm text-white font-bold">✓</span>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-[#6B7280] hidden md:inline">{user.email}</span>
-              <button
-                onClick={handleLogout}
-                className="h-8 px-3 text-sm font-medium text-[#111827] bg-white border border-[#E5E7EB] rounded-[8px] hover:bg-gray-50 transition-colors"
-              >
-                Logout
-              </button>
-            </div>
+            <span className="text-xl font-bold text-white">DO IT</span>
+          </div>
+
+          {/* Center nav */}
+          <nav className="hidden sm:flex items-center gap-2">
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/20 rounded-[10px] transition-colors"
+            >
+              Tasks
+            </Link>
+            <Link
+              href="/chat"
+              className="px-4 py-2 text-sm font-semibold text-white bg-white/25 border border-white/30 rounded-[10px]"
+            >
+              AI Assistant
+            </Link>
+          </nav>
+
+          {/* Right side */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-white/80 hidden md:inline">{user.email}</span>
+            <button
+              onClick={handleLogout}
+              className="h-[40px] px-5 text-sm font-semibold text-white bg-white/20 border border-white/30 rounded-[12px] hover:bg-white/30 transition-colors"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-hidden">
-        <div className="h-full flex">
-          {/* Sidebar - Conversation List */}
-          {showSidebar && (
-            <div className="w-72 bg-white border-r border-[#E5E7EB] flex-shrink-0">
-              <ConversationList
-                userId={user.id}
-                activeConversationId={activeConversationId}
-                onConversationSelect={(id) => setActiveConversationId(id)}
-              />
-            </div>
-          )}
+      {/* Content: Sidebar + Chat Panel */}
+      <div className="flex flex-1 overflow-hidden" style={{ minHeight: 'calc(100vh - 72px)' }}>
 
-          {/* Chat Interface */}
-          <div className="flex-1 flex flex-col">
-            <div className="px-6 py-3 border-b border-[#E5E7EB] bg-white flex justify-between items-center">
-              <button
-                onClick={() => setShowSidebar(!showSidebar)}
-                className="h-8 px-3 text-xs font-medium text-[#6B7280] bg-[#F3F4F6] hover:bg-gray-200 rounded-[8px] transition-colors"
-              >
-                {showSidebar ? 'Hide Conversations' : 'Show Conversations'}
-              </button>
-            </div>
+        {/* Conversation Sidebar — 280px, hidden on small screens */}
+        <aside className="hidden md:flex w-[280px] bg-white border-r border-[#E5E7EB] flex-shrink-0 flex-col overflow-hidden">
+          <ConversationList
+            userId={user.id}
+            activeConversationId={activeConversationId}
+            onConversationSelect={(id) => setActiveConversationId(id)}
+          />
+        </aside>
 
-            <div className="flex-1 p-4 overflow-hidden">
-              <div className="h-full">
-                <ChatInterface
-                  userId={user.id}
-                  conversationId={activeConversationId}
-                  onConversationCreated={(id) => {
-                    setActiveConversationId(id);
-                    console.log('Conversation created:', id);
-                  }}
-                />
-              </div>
-            </div>
+        {/* Chat Panel */}
+        <main className="flex-1 flex flex-col overflow-hidden p-6">
+          <div className="flex-1 max-w-[800px] mx-auto w-full flex flex-col overflow-hidden">
+            <ChatInterface
+              userId={user.id}
+              conversationId={activeConversationId}
+              onConversationCreated={(id) => {
+                setActiveConversationId(id);
+              }}
+            />
           </div>
-        </div>
-      </main>
-
-      {/* Footer with instructions */}
-      <footer className="bg-white border-t border-[#E5E7EB] py-4 flex-shrink-0">
-        <div className="max-w-[1200px] mx-auto px-8">
-          <p className="text-xs text-center text-[#6B7280]">
-            Tip: You can manage tasks naturally - try "add task buy milk", "show my tasks", "complete task 5", or "update task 2 to call dentist"
-          </p>
-        </div>
-      </footer>
+        </main>
+      </div>
     </div>
   );
 }

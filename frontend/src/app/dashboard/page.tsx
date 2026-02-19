@@ -1,6 +1,6 @@
 /**
  * Dashboard Page
- * Protected page for managing tasks
+ * Protected page for managing tasks — sidebar + main layout
  */
 
 'use client';
@@ -21,27 +21,19 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<{ id: string; email: string } | null>(null);
   const [filter, setFilter] = useState<FilterType>('all');
-  const [formKey, setFormKey] = useState(0); // Add form key to force reset
+  const [formKey, setFormKey] = useState(0);
   const { tasks, loading, error, createTask, updateTask, deleteTask, toggleTask } = useTasks(filter);
 
   useEffect(() => {
-    // Small delay to ensure token is loaded from localStorage
     const checkAuth = async () => {
       await new Promise(resolve => setTimeout(resolve, 50));
-
-      // Check authentication
       if (!isAuthenticated()) {
         router.push('/login');
         return;
       }
-
-      // Get user info
       const currentUser = getCurrentUser();
-      if (currentUser) {
-        setUser(currentUser);
-      }
+      if (currentUser) setUser(currentUser);
     };
-
     checkAuth();
   }, [router]);
 
@@ -53,11 +45,9 @@ export default function DashboardPage() {
   const handleCreateTask = async (data: TaskCreateRequest) => {
     try {
       await createTask(data);
-      // Force form reset by changing key
       setFormKey(prev => prev + 1);
     } catch (error) {
       console.error('Failed to create task:', error);
-      // Still increment key to reset form even on error
       setFormKey(prev => prev + 1);
     }
   };
@@ -65,14 +55,12 @@ export default function DashboardPage() {
   const handleEditTask = async (id: number, title: string) => {
     try {
       await updateTask(id, { title });
-      // Task list will update automatically via the hook
     } catch (error) {
       console.error('Failed to update task:', error);
     }
   };
 
   const handlePrintTasks = () => {
-    // Create printable content
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
@@ -82,46 +70,14 @@ export default function DashboardPage() {
         <head>
           <title>My Tasks - DO IT</title>
           <style>
-            body {
-              font-family: Arial, sans-serif;
-              padding: 20px;
-              max-width: 800px;
-              margin: 0 auto;
-            }
-            h1 {
-              color: #3B82F6;
-              border-bottom: 3px solid #3B82F6;
-              padding-bottom: 10px;
-            }
-            .task {
-              border: 1px solid #E5E7EB;
-              padding: 15px;
-              margin: 10px 0;
-              border-radius: 8px;
-              background: #F9FAFB;
-            }
-            .task.completed {
-              background: #E0F2FE;
-              text-decoration: line-through;
-              opacity: 0.7;
-            }
-            .task-title {
-              font-weight: bold;
-              font-size: 16px;
-              margin-bottom: 5px;
-            }
-            .task-meta {
-              color: #6B7280;
-              font-size: 14px;
-            }
-            .print-date {
-              text-align: right;
-              color: #6B7280;
-              margin-top: 20px;
-            }
-            @media print {
-              button { display: none; }
-            }
+            body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+            h1 { color: #2563EB; border-bottom: 3px solid #2563EB; padding-bottom: 10px; }
+            .task { border: 1px solid #E5E7EB; padding: 15px; margin: 10px 0; border-radius: 8px; background: #F9FAFB; }
+            .task.completed { background: #E0F2FE; text-decoration: line-through; opacity: 0.7; }
+            .task-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+            .task-meta { color: #6B7280; font-size: 14px; }
+            .print-date { text-align: right; color: #6B7280; margin-top: 20px; }
+            @media print { button { display: none; } }
           </style>
         </head>
         <body>
@@ -137,10 +93,8 @@ export default function DashboardPage() {
               ${task.due_date ? `<div class="task-meta">Due: ${new Date(task.due_date).toLocaleDateString()}</div>` : ''}
             </div>
           `).join('')}
-          <div class="print-date">
-            <p>Printed on: ${new Date().toLocaleString()}</p>
-          </div>
-          <button onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer;">Print</button>
+          <div class="print-date"><p>Printed on: ${new Date().toLocaleString()}</p></div>
+          <button onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #2563EB; color: white; border: none; border-radius: 8px; cursor: pointer;">Print</button>
         </body>
       </html>
     `;
@@ -158,72 +112,113 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Header */}
-      <header className="bg-white h-[72px] border-b border-[#E5E7EB] shadow-sm">
-        <div className="max-w-[1200px] mx-auto px-8 h-full">
-          <div className="flex items-center justify-between h-full">
-            <div className="flex items-center gap-6">
-              <h1 className="text-xl font-bold text-[#111827]">✓ DO IT</h1>
-              <nav className="hidden sm:flex items-center gap-1">
-                <Link
-                  href="/chat"
-                  className="px-4 py-2 text-sm font-medium text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] rounded-[10px] transition-colors"
-                >
-                  AI Chat
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className="px-4 py-2 text-sm font-medium text-[#2563EB] bg-blue-50 rounded-[10px]"
-                >
-                  Tasks
-                </Link>
-                <button
-                  onClick={handlePrintTasks}
-                  className="px-4 py-2 text-sm font-medium text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] rounded-[10px] transition-colors"
-                >
-                  Print List
-                </button>
-              </nav>
+    <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
+      {/* Top Navbar — 72px with blue gradient */}
+      <header className="h-[72px] flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4F8CFF, #3A6EDC)' }}>
+        <div className="px-8 h-full flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center border border-white/30">
+              <span className="text-sm text-white font-bold">✓</span>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-[#6B7280] hidden md:inline">{user.email}</span>
-              <button
-                onClick={handlePrintTasks}
-                className="sm:hidden h-8 px-3 text-xs font-medium text-[#6B7280] bg-[#F3F4F6] rounded-[8px] hover:bg-gray-200 transition-colors"
-                title="Print Tasks"
-              >
-                Print
-              </button>
-              <button
-                onClick={handleLogout}
-                className="h-8 px-3 text-xs sm:text-sm font-medium text-[#111827] bg-white border border-[#E5E7EB] rounded-[8px] hover:bg-gray-50 transition-colors"
-              >
-                Logout
-              </button>
-            </div>
+            <span className="text-xl font-bold text-white">DO IT</span>
+          </div>
+
+          {/* Right side */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-white/80 hidden md:inline">{user.email}</span>
+            <button
+              onClick={handleLogout}
+              className="h-[40px] px-5 text-sm font-semibold text-white bg-white/20 border border-white/30 rounded-[12px] hover:bg-white/30 transition-colors"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="py-8">
-        <div className="max-w-[1200px] mx-auto px-8">
-          {/* Task Creation Form Card */}
-          <div className="bg-white rounded-[20px] p-8 mb-6 border border-[#E5E7EB] shadow-sm">
-            <h2 className="text-lg font-semibold text-[#111827] mb-6 text-center">Add New Task</h2>
-            <TaskFormComponent key={formKey} onSubmit={handleCreateTask} />
+      {/* Content: Sidebar + Main */}
+      <div className="flex flex-1" style={{ minHeight: 'calc(100vh - 72px)' }}>
+
+        {/* Sidebar — 280px, hidden on small/medium screens */}
+        <aside className="hidden lg:flex w-[280px] bg-white border-r border-[#E5E7EB] flex-shrink-0 flex-col">
+          {/* Sidebar top accent */}
+          <div className="px-5 py-4 border-b border-[#E5E7EB]">
+            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Navigation</p>
+          </div>
+          <nav className="p-3 flex flex-col gap-1 pt-4">
+            {/* Tasks — active */}
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-3 h-[44px] px-4 text-sm font-semibold text-[#2563EB] bg-blue-50 rounded-[12px]"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+              </svg>
+              Tasks
+            </Link>
+
+            {/* AI Assistant */}
+            <Link
+              href="/chat"
+              className="flex items-center gap-3 h-[44px] px-4 text-sm font-medium text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] rounded-[12px] transition-colors"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              </svg>
+              AI Assistant
+            </Link>
+
+            {/* Print List */}
+            <button
+              onClick={handlePrintTasks}
+              className="flex items-center gap-3 h-[44px] px-4 text-sm font-medium text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] rounded-[12px] transition-colors w-full text-left"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+              </svg>
+              Print List
+            </button>
+          </nav>
+
+          {/* Sidebar footer */}
+          <div className="mt-auto p-4 border-t border-[#E5E7EB]">
+            <Link
+              href="/"
+              className="flex items-center gap-3 h-[44px] px-4 text-sm font-medium text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] rounded-[12px] transition-colors"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              Home
+            </Link>
+          </div>
+        </aside>
+
+        {/* Main Content — flex-1, padding 32px */}
+        <main className="flex-1 p-8 overflow-auto">
+
+          {/* Add Task Card — 600px centered */}
+          <div className="max-w-[600px] mx-auto bg-white rounded-[24px] mb-8 border border-[#E5E7EB] shadow-md overflow-hidden">
+            {/* Blue accent header */}
+            <div className="px-10 py-5 border-b border-[#E5E7EB]" style={{ background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)' }}>
+              <h2 className="text-[22px] font-semibold text-[#1E40AF]">➕ Add New Task</h2>
+              <p className="text-sm text-[#6B7280] mt-1">Fill in the details below to create a task</p>
+            </div>
+            <div className="p-10">
+              <TaskFormComponent key={formKey} onSubmit={handleCreateTask} />
+            </div>
           </div>
 
-          {/* Task Filters */}
+          {/* Filters */}
           <div className="mb-6 flex justify-center">
             <TaskFilter activeFilter={filter} onFilterChange={setFilter} />
           </div>
 
           {/* Task List Card */}
           <div className="bg-white rounded-[20px] border border-[#E5E7EB] shadow-sm overflow-hidden">
-            <div className="px-8 py-5 border-b border-[#E5E7EB]">
-              <h2 className="text-lg font-semibold text-[#111827] text-center">
+            <div className="px-8 py-5 border-b border-[#E5E7EB] flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-[#111827]">
                 {filter === 'all' && 'All Tasks'}
                 {filter === 'active' && 'Active Tasks'}
                 {filter === 'completed' && 'Completed Tasks'}
@@ -231,6 +226,15 @@ export default function DashboardPage() {
                   ({tasks.length} {tasks.length === 1 ? 'task' : 'tasks'})
                 </span>
               </h2>
+              <button
+                onClick={handlePrintTasks}
+                className="h-[40px] px-4 text-sm font-medium text-[#6B7280] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] hover:bg-[#F3F4F6] transition-colors flex items-center gap-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+                </svg>
+                Print
+              </button>
             </div>
             <TaskListComponent
               tasks={tasks}
@@ -241,8 +245,8 @@ export default function DashboardPage() {
               onEdit={handleEditTask}
             />
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 /**
- * TaskFilter Component
- * Provides filter buttons for All, Active, and Completed tasks
+ * TaskFilter Component - Segmented pill control
  */
 
 'use client';
@@ -15,26 +14,27 @@ interface TaskFilterProps {
 }
 
 export default function TaskFilter({ activeFilter, onFilterChange }: TaskFilterProps) {
-  const filters: { value: FilterType; label: string }[] = [
-    { value: 'all', label: 'All' },
-    { value: 'active', label: 'Active' },
-    { value: 'completed', label: 'Completed' },
+  const filters: { value: FilterType; label: string; emoji: string }[] = [
+    { value: 'all',       label: 'All Tasks',   emoji: '📋' },
+    { value: 'active',    label: 'Active',       emoji: '🔵' },
+    { value: 'completed', label: 'Completed',    emoji: '✅' },
   ];
 
   return (
-    <div className="flex gap-2 mb-6">
+    <div className="inline-flex items-center gap-2 bg-white border border-[#E5E7EB] rounded-[16px] p-1.5 shadow-sm">
       {filters.map(filter => (
         <button
           key={filter.value}
           onClick={() => onFilterChange(filter.value)}
           className={`
-            px-4 py-2 rounded-lg font-medium transition-all
+            flex items-center gap-2 h-[40px] px-5 text-sm font-semibold rounded-[12px] transition-all duration-200
             ${activeFilter === filter.value
-              ? 'bg-blue-600 text-white shadow-md'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-[#2563EB] text-white shadow-sm'
+              : 'text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6]'
             }
           `}
         >
+          <span className="text-sm">{filter.emoji}</span>
           {filter.label}
         </button>
       ))}

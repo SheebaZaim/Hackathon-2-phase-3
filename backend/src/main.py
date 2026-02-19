@@ -42,10 +42,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database on startup"""
+    """Initialize database on startup — runs in thread pool to avoid blocking event loop"""
+    import asyncio
     try:
         print("Initializing database...")
-        init_db()
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, init_db)
         print("[OK] Database initialized successfully")
     except Exception as e:
         print(f"[WARNING] Database initialization warning: {e}")

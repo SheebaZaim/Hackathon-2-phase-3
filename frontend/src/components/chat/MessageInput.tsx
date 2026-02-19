@@ -42,9 +42,13 @@ export default function MessageInput({ onSendMessage, disabled = false }: Messag
         <button
           type="submit"
           disabled={disabled || !message.trim()}
-          className="h-[56px] px-6 bg-[#2563EB] text-white text-sm font-semibold rounded-[18px] hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+          className="h-[56px] w-[56px] bg-[#2563EB] text-white rounded-[18px] hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex-shrink-0 flex items-center justify-center shadow-sm"
+          title="Send message"
         >
-          Send
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
         </button>
       </div>
       <div className="text-xs text-[#6B7280] mt-2 pl-1">
