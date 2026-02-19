@@ -23,6 +23,11 @@ export default function ChatInterface({
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Sync internal state when parent changes the selected conversation
+  useEffect(() => {
+    setConversationId(initialConversationId ?? null);
+  }, [initialConversationId]);
+
   // Load conversation history when conversation ID changes
   useEffect(() => {
     if (conversationId) {

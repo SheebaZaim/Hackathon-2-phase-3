@@ -47,7 +47,7 @@ export default function ConversationList({
         // Filter empty conversations and show only last 5
         const nonEmpty = (data.conversations || [])
           .filter((c: Conversation) => c.message_count > 0)
-          .slice(0, 5);
+          .slice(0, 2);
         setConversations(nonEmpty);
       } else {
         throw new Error('Failed to load conversations');
